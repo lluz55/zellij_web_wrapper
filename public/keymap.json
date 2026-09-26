@@ -1,0 +1,149 @@
+{
+  "modifiers": ["ctrl", "alt", "shift", "meta"],
+  "specialKeys": [
+    { "id": "esc", "label": "Esc", "sequence": "\u001b" },
+    { "id": "tab", "label": "Tab", "sequence": "\t" },
+    { "id": "up", "label": "↑", "sequence": "\u001b[A" },
+    { "id": "down", "label": "↓", "sequence": "\u001b[B" },
+    { "id": "left", "label": "←", "sequence": "\u001b[D" },
+    { "id": "right", "label": "→", "sequence": "\u001b[C" },
+    { "id": "home", "label": "Home", "sequence": "\u001b[H" },
+    { "id": "end", "label": "End", "sequence": "\u001b[F" },
+    { "id": "pgup", "label": "PgUp", "sequence": "\u001b[5~" },
+    { "id": "pgdn", "label": "PgDn", "sequence": "\u001b[6~" },
+    { "id": "enter", "label": "Enter", "sequence": "\r" },
+    { "id": "backspace", "label": "Bksp", "sequence": "\u007f" }
+  ],
+  "ctrlShortcuts": [
+    { "id": "c-c", "label": "Ctrl+c", "sequence": "\u0003", "description": "Interrompe processo atual (SIGINT)" },
+    { "id": "c-d", "label": "Ctrl+d", "sequence": "\u0004", "description": "Envia EOF / fecha terminal" },
+    { "id": "c-z", "label": "Ctrl+z", "sequence": "\u001a", "description": "Suspende processo para background" },
+    { "id": "c-l", "label": "Ctrl+l", "sequence": "\f", "description": "Limpa tela do terminal" },
+    { "id": "c-p", "label": "Ctrl+p (Pane)", "sequence": "\u0010", "description": "Modo Pane no Zellij" },
+    { "id": "c-t", "label": "Ctrl+t (Tab)", "sequence": "\u0014", "description": "Modo Abas no Zellij" },
+    { "id": "c-n", "label": "Ctrl+n (Resize)", "sequence": "\u000e", "description": "Modo Redimensionar no Zellij" },
+    { "id": "c-s", "label": "Ctrl+s (Scroll)", "sequence": "\u0013", "description": "Modo Busca/Rolagem no Zellij" },
+    { "id": "c-o", "label": "Ctrl+o (Session)", "sequence": "\u000f", "description": "Modo Sessão no Zellij" },
+    { "id": "c-q", "label": "Ctrl+q (Quit)", "sequence": "\u0011", "description": "Sair do Zellij" },
+    { "id": "c-b", "label": "Ctrl+b (Tmux)", "sequence": "\u0002", "description": "Prefixo tmux" }
+  ],
+  "altShortcuts": [
+    { "id": "alt-n", "label": "Alt+n (+Pane)", "sequence": "\u001bn", "description": "Cria novo painel no Zellij" },
+    { "id": "alt-f", "label": "Alt+f (Float)", "sequence": "\u001bf", "description": "Alterna painel flutuante" },
+    { "id": "alt-right", "label": "Alt+→ (Next)", "sequence": "\u001b\u001b[C", "description": "Foco para o próximo painel" },
+    { "id": "alt-left", "label": "Alt+← (Prev)", "sequence": "\u001b\u001b[D", "description": "Foco para o painel anterior" },
+    { "id": "alt-up", "label": "Alt+↑", "sequence": "\u001b\u001b[A", "description": "Foco para o painel acima" },
+    { "id": "alt-down", "label": "Alt+↓", "sequence": "\u001b\u001b[B", "description": "Foco para o painel abaixo" },
+    { "id": "alt-plus", "label": "Alt+= (Grow)", "sequence": "\u001b=", "description": "Aumenta painel ativo" },
+    { "id": "alt-minus", "label": "Alt+- (Shrink)", "sequence": "\u001b-", "description": "Diminui painel ativo" },
+    { "id": "alt-next-layout", "label": "Alt+] (Layout)", "sequence": "\u001b]", "description": "Próximo layout predefinido" },
+    { "id": "alt-prev-layout", "label": "Alt+[ (Layout)", "sequence": "\u001b[", "description": "Layout anterior predefinido" }
+  ],
+  "functionKeys": [
+    { "id": "f1", "label": "F1", "sequence": "\u001bOP" },
+    { "id": "f2", "label": "F2", "sequence": "\u001bOQ" },
+    { "id": "f3", "label": "F3", "sequence": "\u001bOR" },
+    { "id": "f4", "label": "F4", "sequence": "\u001bOS" },
+    { "id": "f5", "label": "F5", "sequence": "\u001b[15~" },
+    { "id": "f6", "label": "F6", "sequence": "\u001b[17~" },
+    { "id": "f7", "label": "F7", "sequence": "\u001b[18~" },
+    { "id": "f8", "label": "F8", "sequence": "\u001b[19~" },
+    { "id": "f9", "label": "F9", "sequence": "\u001b[20~" },
+    { "id": "f10", "label": "F10", "sequence": "\u001b[21~" },
+    { "id": "f11", "label": "F11", "sequence": "\u001b[23~" },
+    { "id": "f12", "label": "F12", "sequence": "\u001b[24~" }
+  ],
+  "zellijQuickActions": [
+    {
+      "id": "qa-new-pane-down",
+      "label": "Split Abaixo",
+      "steps": ["ctrl+p", "d"],
+      "category": "pane",
+      "description": "Divide criando novo pane abaixo (Ctrl+p -> d)"
+    },
+    {
+      "id": "qa-new-pane-right",
+      "label": "Split Direita",
+      "steps": ["ctrl+p", "r"],
+      "category": "pane",
+      "description": "Divide criando novo pane à direita (Ctrl+p -> r)"
+    },
+    {
+      "id": "qa-close-pane",
+      "label": "Fechar Pane",
+      "steps": ["ctrl+p", "x"],
+      "category": "pane",
+      "description": "Fecha o painel em foco (Ctrl+p -> x)"
+    },
+    {
+      "id": "qa-fullscreen",
+      "label": "Tela Cheia",
+      "steps": ["ctrl+p", "f"],
+      "category": "pane",
+      "description": "Alterna tela cheia no painel (Ctrl+p -> f)"
+    },
+    {
+      "id": "qa-rename-pane",
+      "label": "Renomear Pane",
+      "steps": ["ctrl+p", "c"],
+      "category": "pane",
+      "description": "Renomeia o painel atual (Ctrl+p -> c)"
+    },
+    {
+      "id": "qa-toggle-frames",
+      "label": "Bordas On/Off",
+      "steps": ["ctrl+p", "z"],
+      "category": "pane",
+      "description": "Oculta/mostra bordas dos painéis (Ctrl+p -> z)"
+    },
+    {
+      "id": "qa-new-tab",
+      "label": "+ Nova Aba",
+      "steps": ["ctrl+t", "n"],
+      "category": "tab",
+      "description": "Cria nova aba (Ctrl+t -> n)"
+    },
+    {
+      "id": "qa-close-tab",
+      "label": "Fechar Aba",
+      "steps": ["ctrl+t", "x"],
+      "category": "tab",
+      "description": "Fecha aba atual (Ctrl+t -> x)"
+    },
+    {
+      "id": "qa-next-tab",
+      "label": "Próxima Aba",
+      "steps": ["ctrl+t", "l"],
+      "category": "tab",
+      "description": "Aba à direita (Ctrl+t -> l)"
+    },
+    {
+      "id": "qa-prev-tab",
+      "label": "Aba Anterior",
+      "steps": ["ctrl+t", "h"],
+      "category": "tab",
+      "description": "Aba à esquerda (Ctrl+t -> h)"
+    },
+    {
+      "id": "qa-sync-tab",
+      "label": "Sincronizar Aba",
+      "steps": ["ctrl+t", "s"],
+      "category": "tab",
+      "description": "Replica digitação para todos os panes (Ctrl+t -> s)"
+    },
+    {
+      "id": "qa-detach",
+      "label": "Desanexar (Detach)",
+      "steps": ["ctrl+o", "d"],
+      "category": "session",
+      "description": "Desconecta da sessão mantendo-a viva (Ctrl+o -> d)"
+    },
+    {
+      "id": "qa-session-manager",
+      "label": "Gerenciador Sessões",
+      "steps": ["ctrl+o", "w"],
+      "category": "session",
+      "description": "Abre o gerenciador flutuante do Zellij (Ctrl+o -> w)"
+    }
+  ]
+}

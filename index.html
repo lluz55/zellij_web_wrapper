@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zellij Web Android — Protótipo de Toolbar</title>
+    <link rel="stylesheet" href="/node_modules/@xterm/xterm/css/xterm.css" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Top header with controls -->
+      <header class="app-header">
+        <div class="header-title">
+          <span class="logo">⚡</span>
+          <strong>Zellij / Web Terminal</strong>
+          <span id="connection-status" class="status-badge status-disconnected">Desconectado</span>
+          <span id="dimensions-badge" class="dimensions-badge">80x24</span>
+        </div>
+
+        <div class="header-session-picker">
+          <label for="session-select" class="session-label">Sessão:</label>
+          <select id="session-select" class="session-select" title="Escolha entre Shell Padrão ou Sessão Zellij">
+            <option value="default">🐚 Shell Padrão (bash)</option>
+            <option value="zellij-new">✨ Nova Sessão Zellij</option>
+            <optgroup id="zellij-sessions-optgroup" label="🔗 Zellij Existentes">
+              <!-- Populado via /api/sessions -->
+            </optgroup>
+          </select>
+          <button id="btn-reconnect" class="header-btn btn-reconnect" title="Iniciar/Conectar na sessão selecionada">Conectar</button>
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-toggle-viewport" class="header-btn btn-viewport-toggle" title="Alternar entre visualização ajustada à tela e sessão completa (120x34)">📱 Tela Reduzida</button>
+          <div class="zoom-controls">
+            <button id="btn-zoom-out" class="header-btn" title="Diminuir fonte">A-</button>
+            <button id="btn-zoom-reset" class="header-btn" title="Resetar zoom">100%</button>
+            <button id="btn-zoom-in" class="header-btn" title="Aumentar fonte">A+</button>
+          </div>
+          <button id="btn-open-config" class="header-btn" title="Editar keymap.json">⚙️ Config</button>
+        </div>
+      </header>
+
+      <!-- Terminal viewport -->
+      <main id="terminal-container"></main>
+
+      <!-- Bottom overlay toolbar -->
+      <footer id="toolbar-container"></footer>
+
+      <!-- Config Modal / Drawer (RF07 / M5) -->
+      <div id="config-modal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Configuração de Teclas (keymap.json)</h3>
+            <button id="btn-close-modal" class="close-btn">&times;</button>
+          </div>
+          <div class="modal-body">
+            <textarea id="keymap-editor" spellcheck="false"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button id="btn-reload-file" class="btn-secondary">Recarregar do Arquivo</button>
+            <button id="btn-apply-keymap" class="btn-primary">Aplicar em Tempo Real</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
