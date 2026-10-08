@@ -34,16 +34,33 @@
               default = 3001;
               description = "HTTP and WebSocket port.";
             };
+            user = lib.mkOption {
+              type = lib.types.str;
+              default = "lluz";
+              description = "User to run the terminal and zellij sessions as.";
+            };
           };
           config = lib.mkIf cfg.enable {
             systemd.services.zellij-web = {
               description = "Zellij Web Terminal";
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
+              path = [
+                pkgs.zellij
+                pkgs.bashInteractive
+                pkgs.coreutils
+              ];
+              environment = {
+                PORT = toString cfg.port;
+                HOME = "/home/${cfg.user}";
+                USER = cfg.user;
+                SHELL = "${pkgs.bashInteractive}/bin/bash";
+              };
               serviceConfig = {
+                User = cfg.user;
+                WorkingDirectory = "/home/${cfg.user}";
                 ExecStart = "${package}/bin/zellij-web";
                 Restart = "on-failure";
-                Environment = [ "PORT=${toString cfg.port}" ];
               };
             };
           };

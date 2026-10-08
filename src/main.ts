@@ -3,9 +3,12 @@ import { WsClient } from './terminal/ws-client';
 import { Toolbar } from './toolbar/toolbar';
 import { KeymapConfig } from './toolbar/types';
 
-const WS_PORT = 3001;
-const WS_URL = `ws://${window.location.hostname || 'localhost'}:${WS_PORT}`;
-const API_URL = `http://${window.location.hostname || 'localhost'}:${WS_PORT}`;
+const isHttps = window.location.protocol === 'https:';
+const wsProto = isHttps ? 'wss:' : 'ws:';
+// Remove trailing slashes to form base prefix (e.g. "/zellij" or "")
+const basePath = window.location.pathname.replace(/\/+$/, '');
+const WS_URL = `${wsProto}//${window.location.host}${basePath}`;
+const API_URL = `${window.location.origin}${basePath}`;
 
 // Elements
 const terminalContainer = document.getElementById('terminal-container') as HTMLElement;
@@ -146,7 +149,7 @@ btnZoomReset.onclick = () => {
 
 // Fetch and initialize Keymap
 async function loadKeymap(): Promise<KeymapConfig> {
-  const res = await fetch('/keymap.json?t=' + Date.now());
+  const res = await fetch(`${API_URL}/keymap.json?t=` + Date.now());
   if (!res.ok) throw new Error(`Falha ao ler keymap.json: ${res.statusText}`);
   const data = await res.json();
   return data as KeymapConfig;

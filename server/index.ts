@@ -1,5 +1,7 @@
 import http from 'node:http';
-import { URL } from 'node:url';
+import { URL, fileURLToPath } from 'node:url';
+import path from 'node:path';
+import fs from 'node:fs';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { WebSocketServer, WebSocket } from 'ws';
@@ -10,6 +12,28 @@ const execAsync = promisify(exec);
 const PORT = Number(process.env.PORT || 3001);
 const DEFAULT_SHELL = process.env.SHELL_CMD || process.env.SHELL || 'bash';
 const DEFAULT_SHELL_ARGS = process.env.SHELL_ARGS ? process.env.SHELL_ARGS.split(' ') : ['-l'];
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DIST_DIR = path.resolve(__dirname, '../dist');
+
+const MIME_TYPES: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.mjs': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf',
+  '.map': 'application/json',
+};
 
 // Helper to list existing zellij sessions
 async function getZellijSessions(): Promise<Array<{ name: string; raw: string }>> {
@@ -29,7 +53,7 @@ async function getZellijSessions(): Promise<Array<{ name: string; raw: string }>
 }
 
 const server = http.createServer(async (req, res) => {
-  const parsedUrl = new URL(req.url || '/', `http://${req.headers.host}`);
+  const parsedUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -51,6 +75,36 @@ const server = http.createServer(async (req, res) => {
       sessions,
     }));
     return;
+  }
+
+  // Serve static files from dist
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    const safePath = path.normalize(parsedUrl.pathname).replace(/^(\.\.[\/\\])+/, '');
+    let targetPath = path.join(DIST_DIR, safePath);
+
+    if (fs.existsSync(targetPath) && fs.statSync(targetPath).isDirectory()) {
+      targetPath = path.join(targetPath, 'index.html');
+    }
+
+    // SPA fallback: if not an asset request (no extension), serve index.html
+    if (!fs.existsSync(targetPath) || !fs.statSync(targetPath).isFile()) {
+      const fallback = path.join(DIST_DIR, 'index.html');
+      if (fs.existsSync(fallback)) {
+        targetPath = fallback;
+      }
+    }
+
+    if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
+      const ext = path.extname(targetPath).toLowerCase();
+      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+      res.writeHead(200, { 'Content-Type': contentType });
+      if (req.method === 'HEAD') {
+        res.end();
+        return;
+      }
+      fs.createReadStream(targetPath).pipe(res);
+      return;
+    }
   }
 
   res.writeHead(200, { 'Content-Type': 'text/plain' });
