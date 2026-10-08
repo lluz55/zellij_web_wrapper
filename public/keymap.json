@@ -25,7 +25,8 @@
     { "id": "c-s", "label": "Ctrl+s (Scroll)", "sequence": "\u0013", "description": "Modo Busca/Rolagem no Zellij" },
     { "id": "c-o", "label": "Ctrl+o (Session)", "sequence": "\u000f", "description": "Modo Sessão no Zellij" },
     { "id": "c-q", "label": "Ctrl+q (Quit)", "sequence": "\u0011", "description": "Sair do Zellij" },
-    { "id": "c-b", "label": "Ctrl+b (Tmux)", "sequence": "\u0002", "description": "Prefixo tmux" }
+    { "id": "c-b", "label": "Ctrl+b (Tmux)", "sequence": "\u0002", "description": "Prefixo tmux" },
+    { "id": "c-g", "label": "Ctrl+g (Lock)", "sequence": "\u0007", "description": "Locka sessão Zellij (Ctrl+g)" }
   ],
   "altShortcuts": [
     { "id": "alt-n", "label": "Alt+n (+Pane)", "sequence": "\u001bn", "description": "Cria novo painel no Zellij" },

@@ -17,8 +17,29 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* user-select:none em escopo preciso para nao quebrar gestos de scroll/click no mobile */
+.app-header,
+.terminal-toolbar,
+.floating-modifier-tray,
+.zellij-palette,
+.fn-drawer,
+#toolbar-container,
+.btn,
+.header-btn,
+.btn-special,
+.btn-modifier,
+.btn-tray-action,
+.btn-fn,
+.btn-zellij-action,
+.btn-toggle-fn,
+.btn-zellij-hub,
+.btn-reconnect {
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
@@ -194,6 +215,10 @@ html, body {
   border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 5;
 }
 
 .terminal-toolbar {
@@ -204,6 +229,9 @@ html, body {
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
+  touch-action: pan-x manipulation;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
 
 .terminal-toolbar::-webkit-scrollbar {
@@ -220,14 +248,15 @@ html, body {
   color: var(--text-main);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 7px 11px;
+  padding: 9px 12px;
   font-size: 13px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   touch-action: manipulation;
   transition: background-color 0.1s ease, transform 0.05s ease, border-color 0.1s ease;
-  min-width: 36px;
+  min-width: 44px;
+  min-height: 44px;
   text-align: center;
 }
 
@@ -322,10 +351,26 @@ html, body {
   white-space: nowrap;
   animation: slideUp 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   scrollbar-width: none;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 6;
 }
 
 .floating-modifier-tray::-webkit-scrollbar {
   display: none;
+}
+
+/* Em telas estreitas (mobile), os trays de CTRL/ALT transbordam horizontalmente
+   porque o numero de botoes cresce com o keymap. Permitir quebra de linha so
+   em viewports estreitos preserva o scroll horizontal no desktop e garante
+   que teclas adicionadas depois (ex.: Ctrl+g) fiquem visiveis no celular. */
+@media (max-width: 600px) {
+  .floating-modifier-tray {
+    flex-wrap: wrap;
+    white-space: normal;
+    overflow-x: visible;
+  }
 }
 
 @keyframes slideUp {

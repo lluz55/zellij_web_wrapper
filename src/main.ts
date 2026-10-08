@@ -49,6 +49,24 @@ const terminalManager = new TerminalManager({
   },
 });
 
+// Mobile: garantir que tocar na area do terminal foca o xterm (user gesture).
+// Sem isso o Safari iOS ignora o .focus() programatico e o teclado virtual
+// do SO nunca sobe, fazendo a barra de atalhos parecer morta.
+terminalContainer.addEventListener(
+  'pointerdown',
+  () => {
+    terminalManager.terminal.focus();
+  },
+  { passive: true }
+);
+terminalContainer.addEventListener(
+  'touchstart',
+  () => {
+    terminalManager.terminal.focus();
+  },
+  { passive: true }
+);
+
 // Toggle between Responsive (mobile screen fit) and Full Desktop Session (120x34)
 btnToggleViewport.onclick = () => {
   const newMode = terminalManager.toggleViewportMode();
@@ -159,8 +177,11 @@ async function initToolbar() {
   try {
     currentKeymap = await loadKeymap();
     toolbar = new Toolbar(toolbarContainer, currentKeymap, (seq) => {
+      // No mobile, NAO chamar terminalManager.terminal.focus() apos cada
+      // toque da barra: o focus() tenta abrir o teclado virtual do SO, que
+      // cobre a barra, e o toque seguinte e consumido pelo re-layout. Os
+      // botoes ja enviam a sequencia correta direto pelo WebSocket.
       wsClient.send(seq);
-      terminalManager.terminal.focus();
     });
 
     // Wire up terminal virtual keyboard with toolbar modifiers!

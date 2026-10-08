@@ -1,7 +1,7 @@
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { WsClient } from './ws-client';
-import { ModifierState, encodeKeyWithModifiers } from '../toolbar/key-encoder';
+import { ModifierState, encodeKeyWithModifiers, applyModifierToSpecialSequence } from '../toolbar/key-encoder';
 
 export type ViewportMode = 'responsive' | 'fixed-desktop';
 
@@ -64,17 +64,35 @@ export class TerminalManager {
     this.terminal.loadAddon(this.fitAddon);
     this.terminal.open(options.container);
 
-    // Forward terminal input directly to WebSocket, applying armed sticky modifiers from virtual keyboard!
+    // Forward terminal input directly to WebSocket, applying armed sticky modifiers
+    // from the virtual keyboard. Importante: so aplicar modificadores e
+    // desarma-los em entradas de UM caractere. Teclas especiais (Esc, setas,
+    // Enter do teclado virtual, etc.) chegam como sequences > 1 e devem passar
+    // diretas, senao cada Enter do teclado virtual do mobile desarma o Ctrl
+    // e dispara render() na toolbar no meio do toque.
     this.terminal.onData((data) => {
+      const hasMods = this.hasActiveModifiers && this.hasActiveModifiers() && this.getModifiers;
+      if (!hasMods) {
+        this.wsClient.send(data);
+        return;
+      }
+      const mods = this.getModifiers!();
       let finalData = data;
-      if (this.hasActiveModifiers && this.hasActiveModifiers() && this.getModifiers) {
-        const mods = this.getModifiers();
-        if (finalData.length === 1) {
-          finalData = encodeKeyWithModifiers(finalData, mods);
-        } else if (mods.alt || mods.meta) {
-          finalData = '\x1b' + finalData;
-        }
+      if (data.length === 1) {
+        finalData = encodeKeyWithModifiers(data, mods);
         this.clearModifiers?.();
+      } else {
+        if (mods.alt || mods.meta) {
+          if (!data.startsWith('\x1b')) {
+            finalData = '\x1b' + data;
+          }
+        } else if (mods.ctrl || mods.shift || mods.meta) {
+          finalData = applyModifierToSpecialSequence(data, mods);
+        }
+        // Para sequencias multi-char (Enter, seta, F-key do teclado virtual)
+        // NAO limpar modificadores: o usuario pode estar armando Ctrl para
+        // uma combinacao, e o teclado virtual do SO pode mandar Enter/Backspace
+        // como parte de edicao normal.
       }
       this.wsClient.send(finalData);
     });
